@@ -10,16 +10,16 @@ def check_db():
 
 def make_post(post_json):
     with open('db.txt', 'r', encoding='utf-8') as f:
-        if post_json['url'] in f:
+        if post_json['url'] in f.read():
             return
     dzen.create_post(post_json['text'], post_json['imgs'])
     with open('db.txt', 'a', encoding='utf-8') as f:
-        f.write(post_json['url'])
+        f.write(post_json['url'] + '\n')
 
 
 def main():
     check_db()
-    posts_json = telegram.parse('https://t.me/s/Collegetsaritsyno')
+    posts_json = telegram.parse('https://t.me/Collegetsaritsyno', 2)
     dzen.auth()
     for post_json in posts_json:
         make_post(post_json)

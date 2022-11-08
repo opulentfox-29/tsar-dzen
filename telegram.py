@@ -20,8 +20,12 @@ def get_text(item):
     post_text = post_text.replace('\n\n', '\n')
     return post_text
 
-def parse(url):
+
+def parse_page(url):
     r = requests.get(url, headers=headers)
+    
+    open('1.html', 'w', encoding='utf-8').write(r.text)
+    
     soup = BeautifulSoup(r.text, 'html.parser')
     posts = soup.find_all('div', class_='tgme_widget_message_wrap')
 
@@ -43,3 +47,17 @@ def parse(url):
         })
 
     return posts_json
+
+
+def parse(url, req_num):
+    url = url.replace('t.me/', 't.me/s/')
+    posts_json = []
+    for i in range(req_num):
+        posts_page = parse_page(url)
+        start_id = posts_page[0]['url'].split('/')[-1]
+        url = url.split('?before=')[0] + f'?before={start_id}'
+        posts_json = posts_page + posts_json
+        
+    return posts_json
+    
+
